@@ -187,25 +187,33 @@ export function Topbar({
 
                     <div className="my-2 border-t border-white/5" />
 
-                  <div className="mb-2 px-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                    Date range
-                  </div>
+                    <div className="mb-2 px-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Date range
+                    </div>
 
-                  {(["all", "today", "week", "month"] as const).map((range) => (
-                    <button
-                      key={range}
-                      onClick={() => setFilters({ ...filters, dateRange: range })}
-                      className={cn(
-                        "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition",
-                        filters.dateRange === range
-                          ? "bg-white/[0.08] text-foreground"
-                          : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
-                      )}
-                    >
-                      <Calendar className="h-3.5 w-3.5" />
-                      <span className="capitalize">{range === "all" ? "All time" : range === "week" ? "This week" : range === "month" ? "This month" : "Today"}</span>
-                    </button>
-                  ))}
+                    {(["all", "today", "week", "month"] as const).map((range) => (
+                      <button
+                        key={range}
+                        onClick={() => onFiltersChange({ ...filters, dateRange: range })}
+                        className={cn(
+                          "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition",
+                          filters.dateRange === range
+                            ? "bg-white/[0.08] text-foreground"
+                            : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground",
+                        )}
+                      >
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span className="capitalize">
+                          {range === "all"
+                            ? "All time"
+                            : range === "week"
+                              ? "This week"
+                              : range === "month"
+                                ? "This month"
+                                : "Today"}
+                        </span>
+                      </button>
+                    ))}
 
                   {(filters.unreadOnly || filters.hasAttachments || filters.dateRange !== "all") && (
                     <>
