@@ -58,10 +58,12 @@ export function NotificationsPanel({
   open,
   onClose,
   anchorRect,
+  onViewAll,
 }: {
   open: boolean;
   onClose: () => void;
   anchorRect: DOMRect | null;
+  onViewAll: () => void;
 }) {
   const [notifications, setNotifications] = useState(initialNotifications);
   
