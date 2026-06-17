@@ -1,4 +1,13 @@
-import { AlertTriangle, ChevronDown, Clock, FileSearch, Flag, Gavel, History, Info } from "lucide-react";
+import {
+  AlertTriangle,
+  ChevronDown,
+  Clock,
+  FileSearch,
+  Flag,
+  Gavel,
+  History,
+  Info,
+} from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -121,8 +130,7 @@ export function PostageDisputePanel({ postageStatus, amountXlm }: PostageDispute
                       "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
                     postageStatus === "disputed" &&
                       "border-amber-500/30 bg-amber-500/10 text-amber-400",
-                    postageStatus === "refunded" &&
-                      "border-red-500/30 bg-red-500/10 text-red-400",
+                    postageStatus === "refunded" && "border-red-500/30 bg-red-500/10 text-red-400",
                     postageStatus === "expired" &&
                       "border-orange-500/30 bg-orange-500/10 text-orange-400",
                     (postageStatus === "pending" || postageStatus === "reclaimed") &&
