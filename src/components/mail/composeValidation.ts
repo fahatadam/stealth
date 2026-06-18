@@ -1,3 +1,5 @@
+import type { PostageQuote } from "@/features/compose/usePostageQuote";
+
 export type Attachment = {
   name: string;
   size: string;
@@ -24,6 +26,8 @@ export type ComposeDraft = {
   body: string;
   postage: string;
   blockedRecipients?: string[];
+  /** Optional policy quote from the API — used to gate on trust/blocked/minimum postage. */
+  policyQuote?: PostageQuote | null;
 };
 
 export type ComposeSubmission = {
@@ -72,13 +76,24 @@ export function getRecipientReadiness(
   });
 }
 
-export function validateComposeDraft({ to, body, postage, blockedRecipients = [] }: ComposeDraft) {
+export function validateComposeDraft({
+  to,
+  body,
+  postage,
+  blockedRecipients = [],
+  policyQuote,
+}: ComposeDraft) {
   const recipients = getRecipientReadiness(to, postage, blockedRecipients);
 
   if (!recipients.length) return "Please enter a recipient";
   if (!body.trim()) return "Please enter a message";
 
-  // Check for blocked recipients
+  // Policy-level block check (sender explicitly blocked by recipient policy)
+  if (policyQuote && !policyQuote.eligible) {
+    return "Recipient has blocked this sender";
+  }
+
+  // Check for blocked recipients (local blocklist or resolver result)
   if (recipients.some((recipient) => recipient.state === "blocked")) {
     return "Remove blocked recipients before sending";
   }
@@ -90,7 +105,28 @@ export function validateComposeDraft({ to, body, postage, blockedRecipients = []
     return "All recipients must be verified before sending";
   }
 
-  // Check postage
+  // Trusted senders skip postage check entirely
+  if (policyQuote?.trusted) {
+    return null;
+  }
+
+  // Policy-aware postage check: compare against quoted minimum when available
+  if (policyQuote && policyQuote.eligible) {
+    const postageStroops = BigInt(Math.round(Number(postage) * 10_000_000));
+    const minimumStroops = BigInt(policyQuote.amount);
+    if (postageStroops < minimumStroops) {
+      try {
+        const minimumXlm =
+          Number(minimumStroops) / 10_000_000;
+        return `Postage below recipient's minimum (${minimumXlm} XLM required)`;
+      } catch {
+        return "Postage below recipient's minimum";
+      }
+    }
+    return null;
+  }
+
+  // Fallback: basic postage check without policy data
   if (recipients.some((recipient) => recipient.postage === "required")) {
     return "Add postage before sending";
   }
