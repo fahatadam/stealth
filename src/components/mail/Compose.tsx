@@ -580,15 +580,12 @@ export function Compose({
                 const recipientBlocked = resolvedRecipients.some(
                   (r) => r.state === "blocked" || r.state === "invalid",
                 );
-                const recipientResolving = resolvedRecipients.some(
-                  (r) => r.state === "resolving",
-                );
+                const recipientResolving = resolvedRecipients.some((r) => r.state === "resolving");
                 const isBlocked = policyBlocked || recipientBlocked;
                 const trusted = isTrustedSender(quoteState);
 
                 // Determine send CTA disabled state
-                const isSendDisabled =
-                  isSending || isBlocked || recipientResolving;
+                const isSendDisabled = isSending || isBlocked || recipientResolving;
 
                 // Determine button label and style
                 let sendLabel: string;
@@ -631,7 +628,9 @@ export function Compose({
                     title={disabledReason}
                     aria-label={disabledReason ?? sendLabel}
                     className={sendButtonClass}
-                    style={isSendDisabled ? undefined : { boxShadow: "0 8px 30px -10px rgba(0,0,0,0.6)" }}
+                    style={
+                      isSendDisabled ? undefined : { boxShadow: "0 8px 30px -10px rgba(0,0,0,0.6)" }
+                    }
                   >
                     <Send className={cn("h-3.5 w-3.5", isSending && "animate-pulse")} />
                     {sendLabel}

@@ -8,7 +8,13 @@ interface RecipientPolicyBannerProps {
   className?: string;
 }
 
-type BannerVariant = "trusted" | "blocked" | "postage_required" | "verification_required" | "loading" | "error";
+type BannerVariant =
+  | "trusted"
+  | "blocked"
+  | "postage_required"
+  | "verification_required"
+  | "loading"
+  | "error";
 
 interface BannerConfig {
   variant: BannerVariant;
@@ -149,9 +155,7 @@ export function RecipientPolicyBanner({ quoteState, className }: RecipientPolicy
       <Icon className={cn("mt-0.5 h-3.5 w-3.5 shrink-0", iconClass)} />
       <div className="min-w-0 flex-1">
         <span className="font-medium">{label}</span>
-        {detail && (
-          <span className="ml-1 opacity-75">— {detail}</span>
-        )}
+        {detail && <span className="ml-1 opacity-75">— {detail}</span>}
       </div>
       {isError && (
         <button
